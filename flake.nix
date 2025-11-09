@@ -52,8 +52,10 @@
         # --- A. 通常のパッケージ (pkgs のトップレベルに追加) ---
         # another = anotherPkgFunction { pkgs = final; };
 
-        python3Packages = prev.python3Packages // {
-          neopyter = neopyterFunction { pkgs = final; };
+        python3 = prev.python3.override {
+          packageOverrides = pyfinal: pyprev: {
+            neopyter = neopyterFunction { pkgs = final; };
+          };
         };
       };
 
