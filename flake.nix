@@ -83,6 +83,7 @@
             ps.neopyter
             ps.openpyxl
             ps.ipython
+            ps.ydata-profiling
           ]);
         in
         {
