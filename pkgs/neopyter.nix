@@ -6,22 +6,21 @@ pkgs.python3Packages.buildPythonPackage rec {
 
   src = pkgs.python3Packages.fetchPypi {
     inherit pname version;
-    # (sha256 に修正しました)
     sha256 = "w5gOSKdRc163UPFmrf/SGtkKRU5C2KOGb6aR6RT0FiM=";
   };
 
   pyproject = true;
 
   nativeBuildInputs = [
-    pkgs.python3Packages.hatchling
-    pkgs.python3Packages.hatch-jupyter-builder
-    pkgs.python3Packages.hatch-nodejs-version
+    pkgs.python312Packages.hatchling
+    pkgs.python312Packages.hatch-jupyter-builder
+    pkgs.python312Packages.hatch-nodejs-version
   ];
 
-  propagatedBuildInputs = [
-    pkgs.python3Packages.jupyterlab
-    pkgs.python3Packages.pynvim
-  ];
+  # propagatedBuildInputs = [
+  #   pkgs.python312Packages.jupyterlab
+  #   pkgs.python312Packages.pynvim
+  # ];
 
   doCheck = true;
 }

@@ -52,9 +52,25 @@
         # --- A. 通常のパッケージ (pkgs のトップレベルに追加) ---
         # another = anotherPkgFunction { pkgs = final; };
 
-        python3 = prev.python3.override {
+        python311 = prev.python311.override {
           packageOverrides = pyfinal: pyprev: {
-            neopyter = neopyterFunction { pkgs = final; };
+            # neopyter = neopyterFunction { pkgs = final; };
+            # this is for ydata-profiling
+            # visions = pyprev.visions.overridePythonAttrs (oldAttrs: {
+            #   doCheck = false;
+            #   propagatedBuildInputs = (oldAttrs.propagatedBuildInputs or [ ]) ++ [
+            #     pyfinal.imagehash # imagehash パッケージを追加
+            #   ];
+            # });
+            # setuptools = pyprev.setuptools.overridePythonAttrs (oldAttrs: {
+            #   version = "79.0.0";
+            # });
+            # setuptools-scm = pyprev.setuptools-scm.overridePythonAttrs (oldAttrs: {
+            #   version = "8.9.0";
+            # });
+            # waitress = pyprev.waitress.overrideAttrs (oldAttrs: {
+            #   doCheck = false;
+            # });
           };
         };
       };
@@ -71,26 +87,29 @@
           };
 
           # Python 環境の定義
-          dataAnalysisPython = pkgs.python3.withPackages (ps: [
-            ps.jupyterlab
+          dataAnalysisPython = pkgs.python311.withPackages (ps: [
+            ps.uv
             ps.numpy
             ps.pandas
-            ps.matplotlib
+            ps.pillow
             ps.scipy
-            ps.seaborn
-            ps.plotly
-            ps.scikit-learn
-            ps.neopyter
-            ps.openpyxl
-            ps.ipython
-            ps.ydata-profiling
+            ps.torch
+            ps.torchvision
+            # ps.jupyterlab
+            # ps.matplotlib
+            # ps.seaborn
+            # ps.plotly
+            # ps.scikit-learn
+            # ps.neopyter
+            # ps.openpyxl
+            # ps.ipython
+            # ps.ydata-profiling
           ]);
         in
         {
           dataAnalysis = pkgs.mkShell {
             packages = [
               dataAnalysisPython
-              # pkgs.another
             ];
           };
 
