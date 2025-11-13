@@ -12,15 +12,15 @@ pkgs.python3Packages.buildPythonPackage rec {
   pyproject = true;
 
   nativeBuildInputs = [
-    pkgs.python312Packages.hatchling
-    pkgs.python312Packages.hatch-jupyter-builder
-    pkgs.python312Packages.hatch-nodejs-version
+    pkgs.python3Packages.hatchling
+    pkgs.python3Packages.hatch-jupyter-builder
+    pkgs.python3Packages.hatch-nodejs-version
   ];
 
-  # propagatedBuildInputs = [
-  #   pkgs.python312Packages.jupyterlab
-  #   pkgs.python312Packages.pynvim
-  # ];
+  propagatedBuildInputs = [
+    pkgs.python3Packages.jupyterlab
+    pkgs.python3Packages.pynvim
+  ];
 
   doCheck = true;
 }
