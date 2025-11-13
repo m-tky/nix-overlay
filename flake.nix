@@ -54,23 +54,7 @@
 
         python311 = prev.python311.override {
           packageOverrides = pyfinal: pyprev: {
-            # neopyter = neopyterFunction { pkgs = final; };
-            # this is for ydata-profiling
-            # visions = pyprev.visions.overridePythonAttrs (oldAttrs: {
-            #   doCheck = false;
-            #   propagatedBuildInputs = (oldAttrs.propagatedBuildInputs or [ ]) ++ [
-            #     pyfinal.imagehash # imagehash パッケージを追加
-            #   ];
-            # });
-            # setuptools = pyprev.setuptools.overridePythonAttrs (oldAttrs: {
-            #   version = "79.0.0";
-            # });
-            # setuptools-scm = pyprev.setuptools-scm.overridePythonAttrs (oldAttrs: {
-            #   version = "8.9.0";
-            # });
-            # waitress = pyprev.waitress.overrideAttrs (oldAttrs: {
-            #   doCheck = false;
-            # });
+            neopyter = neopyterFunction { pkgs = final; };
           };
         };
       };
@@ -89,12 +73,12 @@
           # Python 環境の定義
           dataAnalysisPython = pkgs.python311.withPackages (ps: [
             ps.uv
-            ps.numpy
-            ps.pandas
-            ps.pillow
-            ps.scipy
-            ps.torch
-            ps.torchvision
+            # ps.numpy
+            # ps.pandas
+            # ps.pillow
+            # ps.scipy
+            # ps.torch
+            # ps.torchvision
             # ps.jupyterlab
             # ps.matplotlib
             # ps.seaborn
