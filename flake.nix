@@ -42,15 +42,13 @@
       overlays.default =
         final: prev:
         let
-          # lib = final.lib;
-          # python3 = final.python3;
-          # fetchPypi = final.fetchPypi;
-          # setuptoolsOverride = import ./pkgs/setuptools.nix {
-          #   inherit lib python3 fetchPypi;
-          # };
-          # setuptools-scmOverride = import ./pkgs/setuptools-scm.nix {
-          #   inherit lib python3 fetchPypi;
-          # };
+          lib = final.lib;
+          python3 = final.python3;
+          fetchPypi = final.fetchPypi;
+
+          jupyterlab-vim = import ./pkgs/jupyterlab-vim.nix {
+            inherit lib python3 fetchPypi;
+          };
 
         in
         {
@@ -61,8 +59,7 @@
                 propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ [ pyfinal.imagehash ];
                 doCheck = false; # テスト無効化
               });
-              # setuptools = setuptoolsOverride;
-              # setuptools-scm = setuptools-scmOverride;
+              jupyterlab-vim = jupyterlab-vim;
             };
           };
         };
@@ -88,6 +85,7 @@
             ps.neopyter
             ps.openpyxl
             ps.ipython
+            ps.jupyterlab-vim
             # ps.ydata-profiling
           ]);
         in
