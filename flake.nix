@@ -27,9 +27,6 @@
           python3 = final.python3;
           fetchPypi = final.fetchPypi;
 
-          jupyterlab-vimOverride = import ./pkgs/jupyterlab-vim.nix {
-            inherit lib python3 fetchPypi;
-          };
           japanize-matplotlibOverride = import ./pkgs/japanize-matplotlib.nix {
             inherit lib python3 fetchPypi;
           };
@@ -38,7 +35,6 @@
         {
           python312 = prev.python312.override {
             packageOverrides = pyfinal: pyprev: {
-              jupyterlab-vim = jupyterlab-vimOverride;
               japanize-matplotlib = japanize-matplotlibOverride;
             };
           };
@@ -55,6 +51,7 @@
           # Python 環境の定義
           dataAnalysisPython = pkgs.python312.withPackages (ps: [
             ps.jupyterlab
+            ps.notebook
             ps.numpy
             ps.pandas
             ps.matplotlib
