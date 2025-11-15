@@ -63,7 +63,6 @@
             ps.seaborn
             ps.plotly
             ps.scikit-learn
-            ps.neopyter
             ps.openpyxl
             ps.ipython
             ps.jupyterlab-vim
