@@ -49,11 +49,30 @@
           };
 
           # Python 環境の定義
-          dataAnalysisPython = pkgs.python311.withPackages (ps: [
+
+          dataAnalysisPython310 = pkgs.python310.withPackages (ps: [
             ps.ipython
             ps.ipykernel
             ps.jupyter
-            ps.notebook
+
+            ps.numpy
+            ps.pandas
+            ps.matplotlib
+            ps.japanize-matplotlib
+            ps.scipy
+            ps.seaborn
+            ps.plotly
+            ps.scikit-learn
+            ps.openpyxl
+            ps.lightgbm
+            ps.optuna
+            ps.tabulate
+            # ps.ydata-profiling
+          ]);
+          dataAnalysisPython311 = pkgs.python311.withPackages (ps: [
+            ps.ipython
+            ps.ipykernel
+            ps.jupyter
 
             ps.numpy
             ps.pandas
@@ -71,9 +90,15 @@
           ]);
         in
         {
-          dataAnalysis = pkgs.mkShell {
+          dataAnalysis310 = pkgs.mkShell {
             packages = [
-              dataAnalysisPython
+              dataAnalysisPython310
+              # pkgs.another
+            ];
+          };
+          dataAnalysis311 = pkgs.mkShell {
+            packages = [
+              dataAnalysisPython311
               # pkgs.another
             ];
           };
