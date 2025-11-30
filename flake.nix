@@ -24,7 +24,7 @@
         final: prev:
         let
           lib = final.lib;
-          python3 = final.python311;
+          python3 = final.python3;
           fetchPypi = final.fetchPypi;
 
           japanize-matplotlibOverride = import ./pkgs/japanize-matplotlib.nix {
@@ -33,7 +33,7 @@
 
         in
         {
-          python311 = prev.python311.override {
+          python3 = prev.python3.override {
             packageOverrides = pyfinal: pyprev: {
               japanize-matplotlib = japanize-matplotlibOverride;
             };
