@@ -54,7 +54,6 @@
             ps.ipykernel
             ps.jupyter
             ps.notebook
-            ps.jupyterlab-vim
 
             ps.numpy
             ps.pandas
