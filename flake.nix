@@ -55,6 +55,7 @@
             ps.jupyter-client
             ps.notebook
             ps.jupyter
+            ps.statsmodels
 
             ps.numpy
             ps.pandas
