@@ -56,6 +56,7 @@
             ps.notebook
             ps.jupyter
             ps.statsmodels
+            ps.lightgbm
 
             ps.numpy
             ps.pandas
