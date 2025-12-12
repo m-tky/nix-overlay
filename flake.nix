@@ -58,7 +58,6 @@
             ps.numpy
             ps.pandas
             ps.matplotlib
-            ps.japanize-matplotlib
             ps.scipy
             ps.seaborn
             ps.plotly
