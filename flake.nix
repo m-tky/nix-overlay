@@ -53,6 +53,7 @@
             ps.notebook
             ps.jupyter
             ps.statsmodels
+            ps.graphviz
             ps.deap
 
             ps.numpy
@@ -73,7 +74,7 @@
           dataAnalysis = pkgs.mkShell {
             packages = [
               dataAnalysisPython
-              # pkgs.another
+              pkgs.graphviz
             ];
           };
 
