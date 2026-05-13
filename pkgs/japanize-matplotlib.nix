@@ -1,12 +1,16 @@
 {
   lib,
-  python3,
+  buildPythonPackage,
   fetchPypi,
+  setuptools,
+  wheel,
+  matplotlib,
 }:
 
-python3.pkgs.buildPythonApplication rec {
+buildPythonPackage rec {
   pname = "japanize-matplotlib";
   version = "1.1.3";
+
   pyproject = true;
 
   src = fetchPypi {
@@ -15,19 +19,19 @@ python3.pkgs.buildPythonApplication rec {
   };
 
   build-system = [
-    python3.pkgs.setuptools
-    python3.pkgs.wheel
+    setuptools
+    wheel
   ];
 
-  pythonImportsCheck = [
-    "japanize_matplotlib"
+  propagatedBuildInputs = [
+    matplotlib
   ];
 
-  meta = {
-    description = "Matplotlibのフォント設定を自動で日本語化する";
+  doCheck = false;
+
+  meta = with lib; {
+    description = "Matplotlib Japanese font support";
     homepage = "https://pypi.org/project/japanize-matplotlib/";
-    license = lib.licenses.unfree; # FIXME: nix-init did not find a license
-    maintainers = with lib.maintainers; [ ];
-    mainProgram = "japanize-matplotlib";
+    license = licenses.mit;
   };
 }

@@ -14,77 +14,79 @@
         "x86_64-darwin"
         "aarch64-darwin"
       ];
-
-      # 各システムごとに pkgs を生成するためのヘルパー関数
       forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system);
-
     in
     {
-      overlays.default =
-        final: prev:
-        let
-          lib = final.lib;
-          python3 = final.python3;
-          fetchPypi = final.fetchPypi;
-
-          japanize-matplotlibOverride = import ./pkgs/japanize-matplotlib.nix {
-            inherit lib python3 fetchPypi;
-          };
-        in
-        {
-          python3Packages = prev.python3Packages // {
-            japanize-matplotlib = japanize-matplotlibOverride;
-          };
-        };
-
       devShells = forAllSystems (
         system:
         let
-          pkgs = import nixpkgs {
-            inherit system;
-            overlays = [ self.overlays.default ];
-          };
+          isLinux = nixpkgs.lib.hasSuffix "linux" system;
 
-          # Python 環境の定義
-          dataAnalysisPython = pkgs.python3.withPackages (ps: [
-            ps.ipython
-            ps.ipykernel
-            ps.jupyter-client
-            ps.notebook
-            ps.jupyter
-            ps.statsmodels
-            ps.deap
+          mkPkgs =
+            cudaSupport:
+            import nixpkgs {
+              inherit system;
+              config = {
+                allowUnfree = true;
+                inherit cudaSupport;
+              };
+            };
 
-            ps.numpy
-            ps.pandas
-            ps.matplotlib
-            ps.scipy
-            ps.seaborn
-            ps.plotly
-            ps.shap
-            ps.scikit-learn
-            ps.openpyxl
-            ps.lightgbm
-            ps.optuna
-            ps.tabulate
-          ]);
+          mkPythonEnv =
+            pkgs:
+            let
+              japanize-matplotlib = pkgs.python312Packages.callPackage ./pkgs/japanize-matplotlib.nix { };
+            in
+            pkgs.python312.withPackages (ps: [
+              japanize-matplotlib
+              ps.ipython
+              ps.jupyterlab
+              ps.statsmodels
+              ps.deap
+              ps.numpy
+              ps.pandas
+              ps.matplotlib
+              ps.scipy
+              ps.seaborn
+              ps.plotly
+              ps.shap
+              ps.scikit-learn
+              ps.openpyxl
+              ps.lightgbm
+              ps.xgboost
+              ps.catboost
+              ps.optuna
+              ps.tabulate
+              ps.torch
+              ps.torchvision
+            ]);
+
+          pkgsCpu = mkPkgs false;
+          pythonCpu = mkPythonEnv pkgsCpu;
         in
         {
-          dataAnalysis = pkgs.mkShell {
-            packages = [
-              dataAnalysisPython
-              # pkgs.another
-            ];
+          dataAnalysis = pkgsCpu.mkShell {
+            packages = [ pythonCpu ];
           };
 
-          # (例) リポジトリ管理用のデフォルトシェル
-          default = pkgs.mkShell {
-            packages = [
-              pkgs.bashInteractive
-              pkgs.git
-            ];
+          default = pkgsCpu.mkShell {
+            packages = [ ];
           };
         }
+        // nixpkgs.lib.optionalAttrs isLinux (
+          let
+            pkgsCuda = mkPkgs true;
+            pythonCuda = mkPythonEnv pkgsCuda;
+          in
+          {
+            dataAnalysisCuda = pkgsCuda.mkShell {
+              packages = [ pythonCuda ];
+              shellHook = ''
+                echo "CUDA-enabled dataAnalysis shell"
+              '';
+            };
+          }
+        )
       );
     };
 }
