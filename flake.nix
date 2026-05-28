@@ -20,40 +20,29 @@
       lib = forAllSystems (
         system:
         let
-          pkgs = import nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
-          };
+          isLinux = nixpkgs.lib.hasSuffix "linux" system;
+
+          mkPkgs =
+            cudaSupport:
+            import nixpkgs {
+              inherit system;
+              config = {
+                allowUnfree = true;
+                inherit cudaSupport;
+              };
+            };
+
           mkPythonEnv =
-            extraPackages:
-            let
-              japanize-matplotlib = pkgs.python312Packages.callPackage ./pkgs/japanize-matplotlib.nix { };
-            in
-            pkgs.python312.withPackages (ps: [
-              japanize-matplotlib
-              ps.ipython
-              ps.jupyterlab
-              ps.statsmodels
-              ps.deap
-              ps.numpy
-              ps.pandas
-              ps.matplotlib
-              ps.scipy
-              ps.seaborn
-              ps.plotly
-              ps.shap
-              ps.scikit-learn
-              ps.openpyxl
-              ps.lightgbm
-              ps.xgboost
-              ps.catboost
-              ps.optuna
-              ps.tabulate
-              ps.torch
-              ps.torchvision
-            ] ++ extraPackages);
+            extraPackages: import ./pkgs/python-env.nix { pkgs = mkPkgs false; inherit extraPackages; };
         in
-        { inherit mkPythonEnv; }
+        {
+          inherit mkPythonEnv;
+        }
+        # CUDA-enabled builder; only valid on Linux.
+        // nixpkgs.lib.optionalAttrs isLinux {
+          mkPythonEnvCuda =
+            extraPackages: import ./pkgs/python-env.nix { pkgs = mkPkgs true; inherit extraPackages; };
+        }
       );
 
       devShells = forAllSystems (
@@ -71,37 +60,10 @@
               };
             };
 
-          mkPythonEnv =
-            pkgs: extraPackages:
-            let
-              japanize-matplotlib = pkgs.python312Packages.callPackage ./pkgs/japanize-matplotlib.nix { };
-            in
-            pkgs.python312.withPackages (ps: [
-              japanize-matplotlib
-              ps.ipython
-              ps.jupyterlab
-              ps.statsmodels
-              ps.deap
-              ps.numpy
-              ps.pandas
-              ps.matplotlib
-              ps.scipy
-              ps.seaborn
-              ps.plotly
-              ps.shap
-              ps.scikit-learn
-              ps.openpyxl
-              ps.lightgbm
-              ps.xgboost
-              ps.catboost
-              ps.optuna
-              ps.tabulate
-              ps.torch
-              ps.torchvision
-            ] ++ extraPackages);
+          mkPythonEnv = pkgs: extraPackages: import ./pkgs/python-env.nix { inherit pkgs extraPackages; };
 
           pkgsCpu = mkPkgs false;
-          pythonCpu = mkPythonEnv pkgsCpu [];
+          pythonCpu = mkPythonEnv pkgsCpu [ ];
         in
         {
           dataAnalysis = pkgsCpu.mkShell {
@@ -115,7 +77,7 @@
         // nixpkgs.lib.optionalAttrs isLinux (
           let
             pkgsCuda = mkPkgs true;
-            pythonCuda = mkPythonEnv pkgsCuda [];
+            pythonCuda = mkPythonEnv pkgsCuda [ ];
           in
           {
             dataAnalysisCuda = pkgsCuda.mkShell {
