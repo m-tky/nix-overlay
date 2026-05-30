@@ -12,6 +12,7 @@ pkgs.python312.withPackages (
   ps:
   [
     japanize-matplotlib
+    ps.tqdm
     ps.ipython
     ps.ipykernel
     ps.jupyterlab
