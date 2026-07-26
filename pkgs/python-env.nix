@@ -4,13 +4,14 @@
 {
   pkgs,
   extraPackages ? [ ],
+  excludePackages ? [ ],
 }:
 let
   japanize-matplotlib = pkgs.python312Packages.callPackage ./japanize-matplotlib.nix { };
 in
 pkgs.python312.withPackages (
   ps:
-  [
+  builtins.filter (package: !(builtins.elem package excludePackages)) [
     japanize-matplotlib
     ps.tqdm
     ps.ipython
