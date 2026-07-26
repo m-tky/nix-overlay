@@ -16,7 +16,6 @@ pkgs.python312.withPackages (
     ps.tqdm
     ps.ipython
     ps.ipykernel
-    ps.jupyterlab
     ps.statsmodels
     ps.deap
     ps.numpy
